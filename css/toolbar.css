@@ -86,7 +86,8 @@
 .elfinder-button-icon-forward   { background-position: 0 -128px; }
 .elfinder-button-icon-up        { background-position: 0 -144px; }
 .elfinder-button-icon-reload    { background-position: 0 -160px; }
-.elfinder-button-icon-open      { background-position: 0 -176px; } 
+/*.elfinder-button-icon-open      { background-position: 0 -176px; } */
+.elfinder-button-icon-open      { background-position: 0 -384px; } 
 .elfinder-button-icon-mkdir     { background-position: 0 -192px; }
 .elfinder-button-icon-mkfile    { background-position: 0 -208px; }
 .elfinder-button-icon-rm        { background-position: 0 -224px; }

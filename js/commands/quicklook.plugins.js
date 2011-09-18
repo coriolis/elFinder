@@ -1,4 +1,3 @@
-
 elFinder.prototype.commands.quicklook.plugins = [
 	
 	/**
@@ -6,9 +5,11 @@ elFinder.prototype.commands.quicklook.plugins = [
 	 *
 	 * @param elFinder.commands.quicklook
 	 **/
+	
 	function(ql) {
 		var mimes   = ['image/jpeg', 'image/png', 'image/gif'],
-			preview = ql.preview;
+			preview = ql.preview,
+			fm = ql.fm;
 		
 		// what kind of images we can display
 		$.each(navigator.mimeTypes, function(i, o) {
@@ -20,50 +21,66 @@ elFinder.prototype.commands.quicklook.plugins = [
 		});
 			
 		preview.bind('update', function(e) {
-			var file = e.file,
-				img;
-
+			var file = e.file;
 			if ($.inArray(file.mime, mimes) !== -1) {
 				// this is our file - stop event propagation
 				e.stopImmediatePropagation();
 
-				img = $('<img/>')
-					.hide()
-					.appendTo(preview)
-					.load(function() {
-						// timeout - because of strange safari bug - 
-						// sometimes cant get image height 0_o
-						setTimeout(function() {
-							var prop = (img.width()/img.height()).toFixed(2);
-							preview.bind('changesize', function() {
-								var pw = parseInt(preview.width()),
-									ph = parseInt(preview.height()),
-									w, h;
-							
-								if (prop < (pw/ph).toFixed(2)) {
-									h = ph;
-									w = Math.floor(h * prop);
-								} else {
-									w = pw;
-									h = Math.floor(w/prop);
-								}
-								img.width(w).height(h).css('margin-top', h < ph ? Math.floor((ph - h)/2) : 0);
-							
-							})
-							.trigger('changesize');
-							
-							// hide info/icon
-							ql.hideinfo();
-							//show image
-							img.fadeIn(100);
-						}, 1)
-					})
-					.attr('src', ql.fm.url(file.hash));
+				// stop loading on change file if not loaded yet
+				preview.one('change', function() {
+					if (!jqxhr.isResolved() && !jqxhr.isRejected()) {
+						jqxhr.quiet = true;
+						jqxhr.abort();
+					}
+				});
+
+                jqxhr = fm.request({
+                    data: {cmd: 'get', target: file.hash },
+                    preventDefault: true
+                })
+				.fail(function(error) {
+					dfrd.reject(error);
+				})
+				.done(function(ql, preview) {
+					return function(data) {
+						var uri = 'data:' + file.mime + ';base64,' + btoa(data.content),
+							img;
+						img = $('<img/>')
+							.hide()
+							.appendTo(preview)
+							.load(function() {
+							setTimeout(function() {
+								var prop = (img.width()/img.height()).toFixed(2);
+								preview.bind('changesize', function() {
+									var pw = parseInt(preview.width()),
+										ph = parseInt(preview.height()),
+										w, h;
+								
+									if (prop < (pw/ph).toFixed(2)) {
+										h = ph;
+										w = Math.floor(h * prop);
+									} else {
+										w = pw;
+										h = Math.floor(w/prop);
+									}
+									img.width(w).height(h).css('margin-top', h < ph ? Math.floor((ph - h)/2) : 0);
+								
+								})
+								.trigger('changesize');
+								
+								// hide info/icon
+								ql.hideinfo();
+								//show image
+								img.fadeIn(100);
+							}, 1);
+						})
+						.attr('src', uri)
+					}
+				}(ql, preview));
 			}
-			
 		});
 	},
-	
+
 	/**
 	 * HTML preview plugin
 	 *

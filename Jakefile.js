@@ -13,9 +13,9 @@ var sys = require('sys'),
 	util = require('util'),
 	ugp  = require('uglify-js').parser,
 	ugu  = require('uglify-js').uglify,
-	csp  = require('csso/lib/cssp').parse,
-	csm  = require('csso/lib/cssm').minimize,
-	csu  = require('csso/lib/cssoutils');
+	csp  = require('csso/lib/cssoapi').parse,
+	csm  = require('csso/lib/cssoapi').compress,
+	csu  = require('csso/lib/cssoapi');
 
 var dirmode = 0755,
 	src = __dirname,
@@ -135,6 +135,11 @@ task('prebuild', function(){
 	//jake.Task['elfinder'].invoke();
 });
 
+desc('build efull')
+task({'efull': ['prebuild', 'css/elfinder.full.css', 'js/elfinder.full.js', 'misc']}, function() {
+    console.log('efull build done');
+});
+
 desc('build elFinder')
 task({'elfinder': ['prebuild', 'css/elfinder.min.css', 'js/elfinder.min.js', 'misc']}, function(){
 	console.log('elFinder build done');
@@ -157,7 +162,8 @@ file({'css/elfinder.full.css': files['elfinder.full.css']}, function(){
 desc('optimize elfinder.min.css');
 file({'css/elfinder.min.css': ['css/elfinder.full.css']}, function () {
 	console.log('optimize elfinder.min.css');
-	var csso = csu.min2string(
+    console.log(fs.readFileSync('css/elfinder.full.css').toString());
+	var csso = csu.treeToString(
 		csm(
 			csp(
 				fs.readFileSync('css/elfinder.full.css').toString()

@@ -64,24 +64,22 @@ elFinder.prototype.commands.open = function() {
 				return dfrd.reject(['errOpen', file.name, 'errPerm']);
 			}
 			
-			if (!(url = fm.url(file.hash))) {
-				url = fm.options.url;
-				url = url + (url.indexOf('?') === -1 ? '?' : '&')
-					+ (fm.oldAPI ? 'cmd=open&current='+file.phash : 'cmd=file')
-					+ '&target=' + file.hash;
-			}
-			
-			w = '';
-			// set window size for image
-			if (file.dim) {
-				s = file.dim.split('x');
-				w = 'width='+(parseInt(s[0])+20) + ',height='+(parseInt(s[1])+20);
-			}
-
-			if (!window.open(url, '_blank', w + ',top=50,left=50,scrollbars=yes,resizable=yes')) {
-				return dfrd.reject('errPopup');
-			}
-		}
+            fm.request({
+                data : {cmd: 'get', target: file.hash},
+                notify: {type: 'download', cnt: 1},
+                syncOnFail: false
+            })
+            .done(function(name) {
+                return function(data) {
+                    var blob = new BlobBuilder();
+                    blob.append(data.content);
+                    var fileSaver = saveAs(blob.getBlob(), name);
+                };
+            }(file.name))
+            .fail(function(error) {
+                dfrd.reject(error);
+            })
+        }
 		return dfrd.resolve(hashes);
 	}
 

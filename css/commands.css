@@ -107,7 +107,7 @@
 	left:50%;
 	margin-left:-100px;
 	text-align:center;
-	background:url(../img/progress.gif) center bottom repeat-x;
+	background:url('../img/progress.gif') center bottom repeat-x;
 }
 
 .elfinder-resize-row { margin-bottom:7px; position:relative;}

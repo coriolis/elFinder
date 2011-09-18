@@ -21,7 +21,7 @@
 	position:absolute;
 	width:16px;
 	height:16px;
-	background-image:url(../img/toolbar.png);
+	background-image:url('../img/toolbar.png');
 	background-repeat:no-repeat;
 	background-position:0 -528px;
 }

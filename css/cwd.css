@@ -196,7 +196,7 @@
 	position:absolute;
 	top:50%;
 	margin-top:-8px;
-	background-image:url(../img/icons-small.png);
+	background-image:url('../img/icons-small.png');
 }
 /* icon in ltr/rtl enviroment */
 .elfinder-ltr .elfinder-cwd-view-list .elfinder-cwd-icon { left:0;  }
