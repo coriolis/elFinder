@@ -758,6 +758,9 @@ window.elFinder = function(node, opts) {
 					case 'parsererror': 
 						error = ['errResponse', 'errDataNotJSON'];
 						break;
+                    case 'open':
+                        error = ['errUsupportType'];
+                        break;
 					default:
 						if (xhr.status == 403) {
 							error = ['errConnect', 'errAccess'];
