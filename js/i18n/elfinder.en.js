@@ -98,6 +98,7 @@ if (elFinder && elFinder.prototype && typeof(elFinder.prototype.i18) == 'object'
 			'cmdupload'    : 'Upload files',
 			'cmdview'      : 'View',
 			'cmdresize'    : 'Resize image',
+            'cmdosinfo'    : 'OS Information',
 			
 			/*********************************** buttons ***********************************/ 
 			'btnClose'  : 'Close',
@@ -127,6 +128,7 @@ if (elFinder && elFinder.prototype && typeof(elFinder.prototype.i18) == 'object'
 			'ntfsearch'   : 'Searching files',
 			'ntfresize'   : 'Resizing images',
 			'ntfsmth'     : 'Doing something >_<',
+            'ntfosinfo'   : 'Retrieving OS info',
 			
 			/************************************ dates **********************************/
 			'dateUnknown' : 'unknown',

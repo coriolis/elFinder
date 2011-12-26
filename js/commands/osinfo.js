@@ -6,30 +6,10 @@
  **/
 elFinder.prototype.commands.osinfo = function() {
 	var m   = 'msg',
-		fm  = this.fm,
-		msg = {
-			calc     : fm.i18n('calc'),
-			size     : fm.i18n('size'),
-			unknown  : fm.i18n('unknown'),
-			path     : fm.i18n('path'),
-			aliasfor : fm.i18n('aliasfor'),
-			modify   : fm.i18n('modify'),
-			perms    : fm.i18n('perms'),
-			locked   : fm.i18n('locked'),
-			dim      : fm.i18n('dim'),
-			kind     : fm.i18n('kind'),
-			files    : fm.i18n('files'),
-			folders  : fm.i18n('folders'),
-			items    : fm.i18n('items'),
-			yes      : fm.i18n('yes'),
-			no       : fm.i18n('no'),
-			link     : fm.i18n('link')
-		};
-		
+		fm  = this.fm;
 	this.tpl = {
 		main       : '<div class="ui-helper-clearfix elfinder-info-title"><span class="elfinder-cwd-icon {class} ui-corner-all"/>{title}</div><table class="elfinder-info-tb">{content}</table>',
-		itemTitle  : '<strong>{name}</strong><span class="elfinder-info-kind">{kind}</span>',
-		groupTitle : '<strong>{items}: {num}</strong>',
+		itemTitle  : '<strong>{name}</strong>',
 		row        : '<tr><td>{label} : </td><td>{value}</td></tr>',
 	}
 	
@@ -37,9 +17,6 @@ elFinder.prototype.commands.osinfo = function() {
 	this.updateOnSelect = false;
 	
 	this.init = function() {
-		$.each(msg, function(k, v) {
-			msg[k] = fm.i18n(v);
-		});
 	}
 	
 	this.getstate = function() {
@@ -73,11 +50,16 @@ elFinder.prototype.commands.osinfo = function() {
 		
         fm.request({
             data : {cmd: 'get', target: 'osinfo'},
-            notify: {type: 'open', cnt: 1},
+            notify: {type: 'osinfo', cnt: 1},
             syncOnFail: false
         })
         .done(function(data) {
-            view = view.replace('{content}', data.content);
+            var obj = $.parseJSON(data.content);
+			title = tpl.itemTitle.replace('{name}', obj.title);
+            for (var i = 0; i < obj['rows'].length; i++) {
+                content.push(row.replace(l, obj['rows'][i][0]).replace(v, obj['rows'][i][1]));
+            }
+            view = view.replace('{title}', title).replace('{content}', content.join(''));
             dialog = fm.dialog(view, opts);
             dialog.attr('id', id);
         })
